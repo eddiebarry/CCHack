@@ -1,0 +1,12 @@
+{
+  "targets": {
+    "run": {
+      "label": "Main",
+      "command": "python src/main.py"
+    },
+    "test": {
+      "label": "Tests",
+      "command": "python src/tests.py"
+    }
+  }
+}

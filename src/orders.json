@@ -1,0 +1,10 @@
+{
+  "as_of": "2025-06-15",
+  "orders": {
+    "1001": {"email": "ana@example.com", "status": "delivered", "delivered_at": "2025-06-05", "item": "Northwind Studio X headphones", "total": 129.00, "plus_member": false, "clearance": false},
+    "1002": {"email": "ben@example.com", "status": "delivered", "delivered_at": "2025-04-20", "item": "Northwind Studio X headphones", "total": 129.00, "plus_member": true, "clearance": false},
+    "1003": {"email": "carla@example.com", "status": "delivered", "delivered_at": "2025-06-10", "item": "Northwind Air earbuds (clearance)", "total": 39.00, "plus_member": false, "clearance": true},
+    "1004": {"email": "dev@example.com", "status": "shipped", "tracking": "TRK-884213", "eta": "2025-06-18", "item": "Northwind Studio X headphones", "total": 129.00, "plus_member": false, "clearance": false},
+    "1005": {"email": "eli@example.com", "status": "delivered", "delivered_at": "2025-05-01", "item": "Northwind Studio X headphones", "total": 129.00, "plus_member": false, "clearance": false}
+  }
+}
