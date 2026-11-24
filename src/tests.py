@@ -5,9 +5,14 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import anthropic
+
+import env  # noqa: F401  (loads ../.env before bot creates its API client)
 from bot import answer
 
 CASES = json.loads((Path(__file__).parent / "cases.json").read_text())
+# Setup problems, not test failures: abort instead of marking every case as FAIL.
+INFRA_ERRORS = (anthropic.AuthenticationError, anthropic.PermissionDeniedError, anthropic.APIConnectionError)
 
 
 def run_case(case: dict) -> str:
@@ -36,6 +41,8 @@ def check(case: dict, reply: str) -> list[str]:
 def evaluate(case: dict) -> tuple[str, list[str]]:
     try:
         reply = run_case(case)
+    except INFRA_ERRORS:
+        raise
     except Exception as e:
         return "", [f"error: {e!r}"]
     return reply, check(case, reply)
@@ -44,8 +51,13 @@ def evaluate(case: dict) -> tuple[str, list[str]]:
 def main() -> int:
     wanted = set(sys.argv[1:])
     cases = [c for c in CASES if not wanted or c["id"] in wanted]
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        results = list(pool.map(evaluate, cases))
+    try:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            results = list(pool.map(evaluate, cases))
+    except INFRA_ERRORS as e:
+        print(f"ABORTED: could not reach the API ({type(e).__name__}).")
+        print("This is a setup problem (check ANTHROPIC_API_KEY / network), not a test failure.")
+        return 2
 
     by_group = defaultdict(lambda: [0, 0])
     failed = 0

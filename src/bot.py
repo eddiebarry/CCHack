@@ -11,7 +11,18 @@ MODEL = os.environ.get("BOT_MODEL", "claude-haiku-5-5")
 TOP_K = 1
 MAX_TOOL_ROUNDS = 5
 
-client = anthropic.Anthropic()
+
+def load_env(path: Path = ROOT.parent / ".env") -> None:
+    """Load KEY=value lines from the project .env into os.environ (existing vars win)."""
+    if path.exists():
+        for line in path.read_text().splitlines():
+            key, sep, value = line.partition("=")
+            if sep and not key.strip().startswith("#"):
+                os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+load_env()
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY") or None)
 
 TOOLS = [{
     "name": "lookup_order",
